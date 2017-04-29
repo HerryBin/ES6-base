@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+
+        /**
+         * 1.声明的变量，仅在块级作用域内有效
+         **/
+        {
+            let a = 10;
+            var b = 1;
+        }
+        console.log(b);
+        console.log(a);
+
+        /**
+         *使用let 避免闭包的形成
+         * 每一次循环的i其实都是一个新的变量
+         * */
+
+        var arr = [];
+        for (let i = 0; i < 10; i++) {
+            arr[i] = function () {
+                console.log(i);
+            }
+        }
+
+        arr[6]();
+
+        /**
+         * 2、不存在变量的提升
+         * 必须声明后再使用
+         * */
+        /* console.log(foo);
+         let foo='test';*/
+
+        /**
+         * 3、暂时性死区
+         * 只要块级作用域存在let命令，它所声明的变量就绑定这个区域，不再受外部影响
+         * 即 在代码块内，使用let声明变量之前，该变量都是不可用额，称为 temporal dead zone.
+         * */
+
+        if (true) {
+            temp='abc';
+            console.log(temp);
+
+            let temp;
+            console.log(temp);
+        }
+
+        /**
+         * 4、不允许重复声明
+         *  不能再函数内部重新声明参数，但如果另开辟一个块级作用域除外
+         * */
+
+        function func(arg) {
+            let arg = 222;//error
+            {
+                let arg = 3333;//ok
+            }
+        }
+
+        /**
+         * 5、ES5规定，函数只能在顶层作用域或函数作用域中声明，不能再块级作用域声明
+         * */
+
+
+        if (true) {
+            function f1() {
+                console.log('不能再块级作用域声明');
+            }
+
+            f1();
+        }
+
+        function f() {
+            console.log('I am outside!');
+        }
+        (function () {
+            if (false) {
+                // 重复声明一次函数f
+                function f() {
+                    console.log('I am inside!');
+                }
+            }
+
+            // f();
+        }());
+
+        /**
+         * 6、const 声明一个只读的常量，一旦声明，必须初始化
+         * 一：作用域与let命令相同，只在声明的块级作用域内有效
+         * 二：不存在作用域提升，同样存在暂时性死区，只能在声明位置后使用
+         * 三：不可重复声明
+         * */
+        if (true) {
+            /// console.log(MAX);
+            const MAX = 5;
+        }
+
+        /**
+         * 7、对于复合类型的变量，变量名不指向数据，而是指向数据所在的地址
+         * const命令只是保证变量名指向的地址不变，并不保证改地址的数据不变
+         * 如果不希望改变对象属性，则应该使用Object.freeze();
+         * */
+        const person = {};
+
+        person.name = 'jackey';
+        // person={}; //error
+
+        const readyOnlyPerson = Object.freeze({});
+
+        readyOnlyPerson.name = 'jack';//虽然不报错，但是输出的值是 undefined
+
+        /**
+         *let、const、class 命令声明的全局变量，不属于全局对象的属性
+         *
+         * */
+
+        let global='test global';
+        console.log(window.global);//undefined
+    </script>
+</head>
+<body>
+
+</body>
+</html>
